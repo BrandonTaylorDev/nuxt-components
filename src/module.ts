@@ -13,6 +13,7 @@ export default defineNuxtModule<ModuleOptions>({
   setup(_options, _nuxt) {
     const resolver = createResolver(import.meta.url)
 
+    _nuxt.options.css.push(resolver.resolve('runtime/assets/main.css'))
     _nuxt.options.css.push(resolver.resolve('runtime/assets/reset.css'))
     addComponentsDir({ path: resolver.resolve('runtime/components') })
 
