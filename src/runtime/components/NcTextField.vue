@@ -1,6 +1,5 @@
 <script setup lang="ts">
-  import { useId } from '#imports';
-  import { watch, computed } from '#imports'
+  import { useId, watch, computed, useSlots, onMounted } from '#imports';
   import { ref } from 'vue'
 
   type Props = {
@@ -14,14 +13,16 @@
     type?         : 'text' | 'password' | 'email'
   }
 
+  const slots = useSlots()
   const props = withDefaults(defineProps<Props>(), {
     label   : '',
     variant : 'filled',
     shadow  : true,
     rounded : 'lg',
-    type    : 'text'
+    type    : 'text',
   })
   const emits = defineEmits([ 'update:modelValue' ])
+  const hasSlot = (name: string) => !!slots[name]
 
   const inputId   = useId()
   const labelId   = useId()
@@ -35,16 +36,27 @@
       return `rounded-${props.rounded}`
     }
   })
+  const prependIconHasEvent = ref(false)
+  const appendIconHasEvent = ref(false)
   
   // Update `value` when `props.modelValue` changes
-  watch(() => props.modelValue, (newValue) => {
-    value.value = newValue
-  })
+  watch(() => props.modelValue, (newValue) => value.value = newValue)
 
   // Emit `update:modelValue` event when `value` changes,
   // so that parent component can update the bound value.
-  watch(() => value.value, (newValue) => {
-    emits('update:modelValue', newValue)
+  watch(() => value.value, (newValue) => emits('update:modelValue', newValue))
+
+  onMounted(() => {
+    const prependIconSlot = slots['prepend-icon']?.()[0];
+    const appendIconSlot = slots['append-icon']?.()[0];
+
+    if(prependIconSlot?.props?.onClick) {
+      prependIconHasEvent.value = true
+    }
+
+    if(appendIconSlot?.props?.onClick) {
+      appendIconHasEvent.value = true
+    }
   })
 </script>
 
@@ -52,38 +64,102 @@
   <div
     :class="[
       'nc-text-field',
-      shadow && variant !== 'underlined' ? 'shadow' : null,
-      rounded && variant !== 'underlined' ? roundedClassName : null,
-      !noTransition ? 'transition' : null,
+
+      // shadow styles.
+      shadow  && variant !== 'underlined'
+        ? 'shadow'
+        : null,
+
+      // rounded styles.
+      rounded && variant !== 'underlined'
+        ? roundedClassName
+        : null,
+
+      // transition styles.
+      !noTransition
+        ? 'transition'
+        : null,
     ]"
   >
-    <input
-      :id="inputId"
-      v-model="value"
-      @focusin="focused = true"
-      @focusout="focused = false"
+    <button
+      v-if="hasSlot('prepend-icon')"
       :class="[
-        variant,
-        label ? 'has-label' : null,
-        !noTransition ? 'transition' : null
-      ]"
-      :aria-labelledby="labelId"
-    />
-
-    <label
-      :id="labelId"
-      :for="inputId"
-      :class="[
-        focused || value != ''
-          ? 'focused'
+        'prepend-icon-wrap',
+        prependIconHasEvent
+          ? 'has-event'
           : null,
+
         !noTransition
           ? 'transition'
-          : null
+          : null,
       ]"
     >
-      {{ props.label }}
-    </label>
+      <slot name="prepend-icon" />
+    </button>
+
+    <div
+      :class="[
+        'controls'
+      ]"
+    >
+      <input
+        :id="inputId"
+        v-model="value"
+        @focusin="focused = true"
+        @focusout="focused = false"
+        :class="[
+          variant,
+          label
+            ? 'has-label'
+            : null,
+          !noTransition
+            ? 'transition'
+            : null,
+          
+          hasSlot('prepend-icon')
+            ? 'has-prepend-icon'
+            : null
+        ]"
+        :aria-labelledby="labelId"
+        :type="type"
+      />
+
+      <label
+        :id="labelId"
+        :for="inputId"
+        :class="[
+          focused || value != ''
+            ? 'focused'
+            : null,
+
+          !noTransition
+            ? 'transition'
+            : null,
+          
+          hasSlot('prepend-icon')
+            ? 'has-prepend-icon'
+            : null
+        ]"
+      >
+        {{ props.label }}
+      </label>
+    </div>
+
+    <button
+      v-if="hasSlot('append-icon')"
+      :class="[
+        'append-icon-wrap',
+        appendIconHasEvent
+          ? 'has-event'
+          : null,
+          
+        !noTransition
+          ? 'transition'
+          : null,
+      ]"
+    >
+      <slot name="append-icon" />
+    </button>
   </div>
 </template>
 
@@ -91,10 +167,46 @@
   .nc-text-field {
     position: relative;
     height: 2rem;
+    display: flex;
+    background-color: #FFFFFF;
+    min-width: 18rem;
+  }
+
+  .nc-text-field > div {
+    height: 100%;
+    border-radius: inherit;
+    background-color: inherit;
+  }
+
+  .prepend-icon-wrap,
+  .append-icon-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    width: 3rem;
+    background: none;
+    color: inherit;
+    border: none;
+    font: inherit;
+    outline: inherit;
+    color: #6b7280
+  }
+  .prepend-icon-wrap.has-event,
+  .append-icon-wrap.has-event {
+    cursor: pointer;
+  }
+
+  .controls {
+    flex-grow: 1;
   }
 
   .transition {
     transition: top 0.3s ease, transform 0.3s ease, font-size 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  }
+
+  label.has-prepend-icon {
+    left: 3rem;
   }
 
   .underlined {
@@ -118,7 +230,6 @@
     border: none;
     margin: 0;
     padding: 0;
-    padding-left: 0.5rem;
     font-size: 0.9rem;
     border-radius: inherit;
     transition: inherit;
@@ -129,6 +240,9 @@
   input.has-label {
     padding-top: 0.5rem;
   }
+  input:not(:has(+ .has-prepend-icon)) {
+    padding: 0 0.5rem;
+  }
   
   input:focus ~ label, .focused {
     top: 0;
@@ -137,12 +251,16 @@
   }
 
   @media screen and (prefers-color-scheme: dark) {
+    .nc-text-field {
+      background-color: #4b5563
+    }
+
     input {
-      background-color: #4b5563;
+      background-color: inherit;
       color: #f9fafb;
     }
 
-    label {
+    label, .prepend-icon-wrap, .append-icon-wrap {
       color: #d1d5db;
     }
   }
