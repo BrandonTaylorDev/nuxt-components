@@ -169,7 +169,7 @@
   }
 
   textarea.has-label {
-    padding-top: 1rem;
+    padding-top: 1.125rem;
   }
 
   textarea:focus ~ label, .focused {
