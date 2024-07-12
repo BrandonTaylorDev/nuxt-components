@@ -5,12 +5,11 @@
 </script>
 
 <template>
-  <div class="p">
+  <nc-card class="p">
     <nc-text-field
       v-model="x"
       label="E-mail"
       type="email"
-      style="min-height: 3rem"
       variant="filled"
     >
       <template #prepend-icon>
@@ -22,7 +21,6 @@
       v-model="y"
       label="Password"
       :type="showPass ? 'text' : 'password'"
-      style="min-height: 3rem"
       variant="filled"
     >
       <template #prepend-icon>
@@ -40,16 +38,21 @@
       </template>
       login
     </nc-button>
-  </div>
+  </nc-card>
 </template>
 
 <style>
   .p {
-    padding: 1rem;
+    margin: 1rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
     max-width: 32rem;
+  }
+
+  .nc-text-field {
+    min-height: 3rem;
+    /* background-color: #f3f3f3!important; */
   }
 
   html {

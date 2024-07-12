@@ -34,6 +34,12 @@
 <template>
   <button
     :class="[
+      'nc-button',
+
+      // shadow style.
+      shadow
+        ? 'shadow'
+        : null,
 
       // block style.
       block
@@ -80,7 +86,7 @@
     gap: 0.5rem;
     min-width: fit-content;
   }
-  button:hover {
+  button:active {
     background-color: #0e7490;
   }
   button:not(.block) {

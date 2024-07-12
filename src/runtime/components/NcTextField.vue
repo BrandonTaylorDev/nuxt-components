@@ -9,17 +9,20 @@
     shadow?       : boolean
     rounded?      : boolean | 'md' | 'lg' | 'xl'
     noTransition? : boolean
-    autocomplete? : boolean
+    autocomplete? : string
+    autofocus?    : boolean
     type?         : 'text' | 'password' | 'email'
   }
 
   const slots = useSlots()
   const props = withDefaults(defineProps<Props>(), {
-    label   : '',
-    variant : 'filled',
-    shadow  : true,
-    rounded : 'lg',
-    type    : 'text',
+    label         : '',
+    variant       : 'filled',
+    shadow        : true,
+    rounded       : 'lg',
+    type          : 'text',
+    autocomplete  : 'off',
+    autofocus     : false
   })
   const emits = defineEmits([ 'update:modelValue' ])
   const hasSlot = (name: string) => !!slots[name]
@@ -122,6 +125,9 @@
         ]"
         :aria-labelledby="labelId"
         :type="type"
+        :autocomplete="autocomplete"
+        :autofocus="autofocus"
+
       />
 
       <label
@@ -222,6 +228,7 @@
     color: #6b7280;
     user-select: none;
     pointer-events: none;
+    background: none;
   }
 
   input {
@@ -233,6 +240,7 @@
     font-size: 0.9rem;
     border-radius: inherit;
     transition: inherit;
+    background-color: inherit;
   }
   input:focus {
     outline: none;
