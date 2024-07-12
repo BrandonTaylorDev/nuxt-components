@@ -1,40 +1,15 @@
 <script setup>
   const x = ref('')
-  const y = ref('')
-  const showPass = ref(false)
 </script>
 
 <template>
   <nc-card class="p">
-    <nc-text-field
-      v-model="x"
-      label="E-mail"
-      type="email"
-      variant="filled"
-    >
-      <template #prepend-icon>
-        <icon name="mdi:email" size="2em" />
-      </template>
-    </nc-text-field>
-
-    <nc-text-field
-      v-model="y"
-      label="Password"
-      :type="showPass ? 'text' : 'password'"
-      variant="filled"
-    >
-      <template #prepend-icon>
-        <icon name="mdi:password" size="2em" />
-      </template>
-
-      <template #append-icon>
-        <icon :name="showPass ? 'mdi:eye-off' : 'mdi:eye'" size="2em" @click="showPass = !showPass" />
-      </template>
-    </nc-text-field>
+    <nc-text-field label="Label" v-model="x" variant="filled" rounded="xl" />
 
     <nc-textarea
       label="Label"
-      rounded
+      rounded="xl"
+      variant="filled"
     >
       <template #prepend-icon>
         <icon name="mdi:message" size="2em" />

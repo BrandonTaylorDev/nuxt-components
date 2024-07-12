@@ -7,7 +7,7 @@
     modelValue?   : string
     variant?      : 'underlined' | 'filled'
     shadow?       : boolean
-    rounded?      : boolean | 'md' | 'lg' | 'xl'
+    rounded?      : 'md' | 'lg' | 'xl'
     noTransition? : boolean
     autocomplete? : string
     autofocus?    : boolean
@@ -23,24 +23,16 @@
     autocomplete  : 'off',
     autofocus     : false
   })
-  const slots = useSlots()
-  const emits = defineEmits([ 'update:modelValue' ])
+  const slots   = useSlots()
+  const emits   = defineEmits([ 'update:modelValue' ])
   const hasSlot = (name: string) => !!slots[name]
 
   const inputId   = useId()
   const labelId   = useId()
   const value     = ref(props.modelValue)
   const focused   = ref(false)
-  const roundedClassName = computed(() => {
-    if(props.rounded) {
-      if(props.rounded === true) {
-        return `rounded-lg`
-      }
-      return `rounded-${props.rounded}`
-    }
-  })
   const prependIconHasEvent = ref(false)
-  const appendIconHasEvent = ref(false)
+  const appendIconHasEvent  = ref(false)
   
   // Update `value` when `props.modelValue` changes
   watch(() => props.modelValue, (newValue) => value.value = newValue)
@@ -75,7 +67,7 @@
 
       // rounded styles.
       rounded && variant !== 'underlined'
-        ? roundedClassName
+        ? `rounded-${rounded}`
         : null,
 
       // transition styles.

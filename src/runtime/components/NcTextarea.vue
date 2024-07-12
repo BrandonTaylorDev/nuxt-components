@@ -7,7 +7,7 @@
     modelValue?   : string
     variant?      : 'underlined' | 'filled'
     shadow?       : boolean
-    rounded?      : boolean | 'md' | 'lg' | 'xl'
+    rounded?      : 'md' | 'lg' | 'xl'
     noTransition? : boolean
     autocomplete? : string
     autofocus?    : boolean
@@ -27,15 +27,6 @@
   const focused = ref(false)
   const hasSlot = (name: string) => !!slots[name]
 
-  const roundedClassName = computed(() => {
-    if(props.rounded) {
-      if(props.rounded === true) {
-        return `rounded-lg`
-      }
-      return `rounded-${props.rounded}`
-    }
-  })
-
   // update Vue with our new value.
   watch(value, () => emits('update:modelValue', value.value))
 
@@ -47,8 +38,14 @@
   <div
     :class="[
       'nc-textarea',
+
+      // variant styles.
       `variant-${variant}`,
-      roundedClassName
+
+      // rounded styles.
+      rounded && variant !== 'underlined'
+        ? `rounded-${rounded}`
+        : null,
     ]"
   >
     <div
@@ -125,6 +122,9 @@
   .nc-textarea.variant-filled {
     box-shadow: var(--shadow);
   }
+  .nc-textarea.variant-underlined {
+    border-bottom: 2px #6b7280 solid;
+  }
   
   .prepend-icon-wrap,
   .append-icon-wrap {
@@ -173,13 +173,13 @@
   }
 
   textarea:focus ~ label, .focused {
-    top: 0rem;
+    top: 0.25rem;
     font-size: 0.75rem;
   }
 
   label {
     position: absolute;
-    top: 1rem;
+    top: 0.5rem;
     left: 1rem;
     transition: top 0.3s ease, font-size 0.3s ease;
     user-select: none;
