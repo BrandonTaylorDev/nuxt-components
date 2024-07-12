@@ -1,10 +1,34 @@
 <script setup>
   const x = ref('')
+  const y = ref('')
 </script>
 
 <template>
   <nc-card class="p">
-    <nc-text-field label="Label" v-model="x" variant="filled" rounded="xl" />
+    <nc-text-field
+      label="E-mail"
+      v-model="x"
+      variant="filled"
+      rounded="xl"
+    
+    >
+      <template #prepend-icon>
+        <icon name="mdi:email" size="2em" />
+      </template>
+    </nc-text-field>
+
+    <nc-text-field
+      label="Password"
+      v-model="y"
+      variant="filled"
+      rounded="xl"
+    
+    >
+      <template #prepend-icon>
+        <icon name="mdi:password" size="2em" />
+      </template>
+    </nc-text-field>
+
 
     <nc-textarea
       label="Label"

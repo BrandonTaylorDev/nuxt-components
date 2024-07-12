@@ -26,6 +26,8 @@
   const value   = ref(props?.modelValue ?? '')
   const focused = ref(false)
   const hasSlot = (name: string) => !!slots[name]
+  const textareaId  = useId()
+  const labelId     = useId()
 
   // update Vue with our new value.
   watch(value, () => emits('update:modelValue', value.value))
@@ -63,6 +65,8 @@
       ]"
     >
       <textarea
+        :id="textareaId"
+        :aria-labelledby="labelId"
         v-model="value"
         @focusin="focused = true"
         @focusout="focused = false"
@@ -81,6 +85,8 @@
 
       <label
         v-if="label"
+        :id="labelId"
+        :for="textareaId"
         :class="[
           hasSlot('prepend-icon')
             ? 'has-prepend-icon'
@@ -173,15 +179,16 @@
   }
 
   textarea:focus ~ label, .focused {
-    top: 0.25rem;
+    padding-top: 0.25rem;
     font-size: 0.75rem;
   }
 
   label {
     position: absolute;
-    top: 0.5rem;
+    top: 0rem;
+    padding-top: 0.5rem;
     left: 1rem;
-    transition: top 0.3s ease, font-size 0.3s ease;
+    transition: padding 0.3s ease, font-size 0.3s ease;
     user-select: none;
     pointer-events: none;
     background: lightblue;
