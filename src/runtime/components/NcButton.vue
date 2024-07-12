@@ -1,6 +1,5 @@
 <script setup lang="ts">
-  import { useId, watch, computed, useSlots, onMounted } from '#imports';
-  import { ref } from 'vue'
+  import { computed } from '#imports';
 
   type Props = {
     variant?      : 'filled'
@@ -12,7 +11,6 @@
     uppercase?    : boolean
   }
 
-  const slots = useSlots()
   const props = withDefaults(defineProps<Props>(), {
     variant   : 'filled',
     shadow    : true,

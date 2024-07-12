@@ -32,6 +32,15 @@
       </template>
     </nc-text-field>
 
+    <nc-textarea
+      label="Label"
+      rounded
+    >
+      <template #prepend-icon>
+        <icon name="mdi:message" size="2em" />
+      </template>
+    </nc-textarea>
+
     <nc-button style="min-height: 3rem">
       <template #prepend-icon>
         <icon name="mdi:login" size="1.5em" />

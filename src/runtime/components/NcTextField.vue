@@ -14,7 +14,6 @@
     type?         : 'text' | 'password' | 'email'
   }
 
-  const slots = useSlots()
   const props = withDefaults(defineProps<Props>(), {
     label         : '',
     variant       : 'filled',
@@ -24,6 +23,7 @@
     autocomplete  : 'off',
     autofocus     : false
   })
+  const slots = useSlots()
   const emits = defineEmits([ 'update:modelValue' ])
   const hasSlot = (name: string) => !!slots[name]
 
